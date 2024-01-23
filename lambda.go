@@ -50,6 +50,8 @@ func HandleLambdaEvent(event *MyEvent) (*MyResponse, error) {
 	pool.SetMaxIdleConns(3)
 	pool.SetMaxOpenConns(3)
 
+	DbHandler(event.Name)
+
 	return &MyResponse{Message: fmt.Sprintf("%s is %d years old!", event.Name, event.Age)}, nil
 }
 
