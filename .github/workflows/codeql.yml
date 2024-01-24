@@ -55,6 +55,11 @@ jobs:
         # The Go version to download (if necessary) and use. Supports semver spec and ranges. Be sure to enclose this option in single quotation marks.
         go-version: 1.21.6
 
+    - run: |
+        LATEST_CODEQL_NIGHTLY=$(curl -s https://api.github.com/repos/dsp-testing/codeql-cli-nightlies/releases | jq -r 'map(select(.prerelease)) | .[0].tag_name')
+        NIGHTLY_URL=https://github.com/dsp-testing/codeql-cli-nightlies/releases/download/${LATEST_CODEQL_NIGHTLY}/codeql-bundle-linux64.tar.gz
+        echo "NIGHTLY_URL=${NIGHTLY_URL}" >> $GITHUB_ENV
+
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -66,7 +71,7 @@ jobs:
 
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         queries: security-experimental
-        tools: https://github.com/dsp-testing/codeql-cli-nightlies/releases/latest/download/codeql-bundle-linux64.tar.gz
+        tools: ${{ env.NIGHTLY_URL }}
 
 
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
